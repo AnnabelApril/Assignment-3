@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>TALK TO ME LOCALHOST</title>
+        <style>
+                        
+            #frame {
+                width: 30em;
+            }
+            textarea {
+                width: 100%;
+                border: 1px solid #888;
+                padding: 3px;
+            }
+            #inputs, #text_field {
+                 width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+                
+        <label>TELL ME YOUR SECRETS!</label>
+        <div id="frame">
+                        
+             <textarea id="conversation" text="..." rows="10" cols="65">Start talking
+</textarea>
+                        
+             <div id="inputs">
+                     <label>To someone out there: </label>
+                     <input id="text_field" type="text" onkeydown="enter_message();"/>
+                     <input type="button" value="Send" onclick="send_message();"/>  
+                     One does not simply programme a return key in a chatbox.... Click Send :)
+             </div>
+
+        </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+          var socket = io().connect('http://localhost:8088');
+
+          socket.on('connect', function (data) {
+            console.log('human connected');
+          });
+
+          socket.on('message from robot', function(msg) {
+
+            document.getElementById("conversation").value += '> ' + msg + '\n';
+
+            console.log('robot message: ' + msg);
+          });
+
+          function send_message() {
+
+            var text = document.getElementById("text_field").value;
+
+            document.getElementById("conversation").value += '* ' + text + '\n';
+
+            socket.emit('message from human', text);
+
+            document.getElementById("text_field").value = '';
+        }
+
+       </script>
+    </body>
+</html>
